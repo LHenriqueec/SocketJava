@@ -29,7 +29,12 @@ public abstract class NetworkConnection {
 	}
 
 	public void sendData(Serializable message) throws Exception {
-		conn.out.writeUTF(message.toString());
+		if (isServer()) {
+			conn.out.writeUTF("Server: " + message.toString());
+		} else {
+			conn.out.writeUTF("Client: " + message.toString());
+		}
+		
 		conn.out.flush();
 	}
 
@@ -47,6 +52,7 @@ public abstract class NetworkConnection {
 	private class Connection extends Service<Void> {
 
 		private ObjectOutputStream out;
+		private Socket socket;
 
 		@Override
 		protected Task<Void> createTask() {
@@ -59,15 +65,15 @@ public abstract class NetworkConnection {
 				@Override
 				protected Void call() throws Exception {
 					try (ServerSocket server = isServer() ? new ServerSocket(getPort()) : null) {
-						Socket socket = isServer() ? server.accept() : new Socket(getHost(), getPort());
-						ObjectOutputStream output = new ObjectOutputStream(socket.getOutputStream());
-						ObjectInputStream in = new ObjectInputStream(socket.getInputStream());
+						Socket socketServer = isServer() ? server.accept() : new Socket(getHost(), getPort());
+						ObjectOutputStream output = new ObjectOutputStream(socketServer.getOutputStream());
+						ObjectInputStream in = new ObjectInputStream(socketServer.getInputStream());
 
-						socket.setTcpNoDelay(true);
+						socketServer.setTcpNoDelay(true);
 
 						out = output;
-						String message = isServer() ? "Server: Conectado..." : "Cliente: Conectado...";
-						sendData(message);
+						socket = socketServer;
+						sendData("Conectado...");
 
 						while (true) {
 							consumer.accept(in.readUTF());
@@ -82,6 +88,11 @@ public abstract class NetworkConnection {
 					} else {
 						updateMessage("Client: online");
 					}
+				}
+				
+				@Override
+				protected void finalize() throws Throwable {
+					socket.close();
 				}
 			};
 		}

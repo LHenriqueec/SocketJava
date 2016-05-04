@@ -12,7 +12,7 @@ import model.NetworkConnection;
 import model.Server;
 
 public class ApplicationController {
-	 private boolean isServer = false;
+	 private boolean isServer = true;
 //	private boolean isServer = false;
 	
 	private NetworkConnection server;

@@ -18,7 +18,7 @@
 		<Button text="Start" GridPane.columnIndex="0" GridPane.rowIndex="0" alignment="CENTER_LEFT" onAction="#onStart" />
 		<Label text="Status" fx:id="lblStatus" GridPane.columnIndex="1" GridPane.rowIndex="0"  />
 		
-		<TextArea text="TESTANDO A MUDANÇA" fx:id="txaMessages" GridPane.columnSpan="2" GridPane.rowIndex="1" GridPane.hgrow="ALWAYS" GridPane.vgrow="ALWAYS" />
+		<TextArea fx:id="txaMessages" GridPane.columnSpan="2" GridPane.rowIndex="1" GridPane.hgrow="ALWAYS" GridPane.vgrow="ALWAYS" />
 		<TextField fx:id="txtMessage" GridPane.columnSpan="2" GridPane.rowIndex="2" GridPane.hgrow="ALWAYS" onAction="#onSend" />
 	</children>
 </GridPane>
